@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WHITE WIDOW | Doppel-Rechner</title>
+    <title>WHITE WIDOW | Ultimate Deal Tools</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -36,6 +36,11 @@
             text-shadow: 0 0 10px var(--primary);
             margin: 0;
         }
+        .subtitle {
+            color: var(--accent);
+            font-style: italic;
+            margin-top: 5px;
+        }
         .calculator {
             width: 100%;
             max-width: 400px;
@@ -51,6 +56,10 @@
             text-align: center;
             margin-bottom: 15px;
             font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         .toggle-container {
             display: flex;
@@ -67,6 +76,7 @@
             color: var(--white);
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 0.9em;
         }
         .toggle-btn.active {
             background: var(--secondary);
@@ -98,7 +108,7 @@
         .strain-row {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .strain-name {
             flex: 2;
@@ -107,19 +117,20 @@
         .strain-price {
             flex: 1;
             text-align: right;
-            padding-right: 10px;
+            padding-right: 15px;
         }
         .strain-quantity {
             flex: 1;
         }
         .strain-quantity input {
             padding: 8px;
-            width: 50px;
+            width: 60px;
             text-align: center;
             background: var(--primary);
             border: 1px solid var(--secondary);
             color: var(--white);
             border-radius: 5px;
+            font-weight: bold;
         }
         .result {
             margin-top: 20px;
@@ -136,6 +147,7 @@
             font-size: 2em;
             color: var(--accent);
             margin: 10px 0;
+            font-weight: bold;
         }
         .normal-profit { color: var(--accent); }
         .vip-profit { color: var(--vip); }
@@ -150,19 +162,23 @@
         .divider {
             width: 80%;
             height: 2px;
-            background: var(--secondary);
+            background: linear-gradient(90deg, transparent, var(--secondary), transparent);
             margin: 20px 0;
-            opacity: 0.3;
+            opacity: 0.5;
+        }
+        .highlight {
+            color: var(--accent);
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="logo">WHITE WIDOW</div>
-        <p style="color: var(--accent);">Doppel-Rechner System</p>
+        <p class="subtitle">"From Soil to Smoke"</p>
     </div>
     
-    <!-- 1. Prozentrechner -->
+    <!-- 1. PROVISION RECHNER -->
     <div class="calculator">
         <div class="calculator-title">
             <i class="fas fa-percentage"></i> Provision-Rechner
@@ -170,27 +186,30 @@
         
         <div class="toggle-container">
             <button class="toggle-btn active" id="normalBtn" onclick="setMode('normal')">
-                <i class="fas fa-user"></i> Standard (15%)
+                Standard (15%)
             </button>
             <button class="toggle-btn" id="vipBtn" onclick="setMode('vip')">
-                <i class="fas fa-crown"></i> VIP (10%)
+                VIP (10%)
             </button>
         </div>
         
         <div class="input-container">
-            <input type="number" id="amount" placeholder="Kundenbetrag eingeben ($)" oninput="calculateSimple()" autofocus>
+            <input type="number" id="amount" placeholder="Kundenbetrag ($)" oninput="calculateSimple()" autofocus>
         </div>
         
         <div class="result" id="simpleResult">
             <div id="simpleProfitLabel">Ihr Anteil (15%):</div>
             <div class="profit normal-profit" id="simpleProfitAmount">$0.00</div>
-            <div id="simpleDetails">Geben Sie einen Betrag ein</div>
+            <div id="simpleDetails">
+                <div>Kunde zahlt: <span class="highlight">$<span id="customerAmount">0.00</span></span></div>
+                <div>Lieferantenanteil: <span class="highlight">$<span id="supplierCut">0.00</span></span></div>
+            </div>
         </div>
     </div>
     
     <div class="divider"></div>
     
-    <!-- 2. Sorten-Additionsrechner -->
+    <!-- 2. SORTEN RECHNER -->
     <div class="calculator">
         <div class="calculator-title">
             <i class="fas fa-cannabis"></i> Sorten-Rechner
@@ -237,16 +256,19 @@
         <div class="result">
             <div>Gesamtbetrag:</div>
             <div class="total-amount" id="totalAmount">$0.00</div>
+            <div id="strainsDetails">
+                <div>Menge: <span class="highlight"><span id="totalItems">0</span> Einheiten</span></div>
+            </div>
         </div>
     </div>
     
     <div class="footer">
         <p>© 2024 WHITE WIDOW | LOS SANTOS</p>
-        <p>Nur für GTA-RP Zwecke</p>
+        <p><i class="fas fa-triangle-exclamation"></i> Nur für GTA-RP Zwecke</p>
     </div>
 
     <script>
-        // 1. Prozentrechner Logik
+        // 1. PROVISION RECHNER
         let mode = 'normal';
         
         function setMode(newMode) {
@@ -273,12 +295,11 @@
             document.getElementById('simpleProfitAmount').className = 
                 `profit ${mode === 'normal' ? 'normal-profit' : 'vip-profit'}`;
             
-            document.getElementById('simpleDetails').innerHTML = 
-                `Kunde zahlt: $${amount.toFixed(2)}<br>
-                 ${amount > 0 ? `Lieferantenanteil: $${(amount - profit).toFixed(2)}` : ''}`;
+            document.getElementById('customerAmount').textContent = amount.toFixed(2);
+            document.getElementById('supplierCut').textContent = (amount - profit).toFixed(2);
         }
         
-        // 2. Sortenrechner Logik
+        // 2. SORTEN RECHNER
         const strainPrices = {
             bk: 120,   // Banana Kush
             bb: 130,   // Blueberry Kush
@@ -289,330 +310,26 @@
         
         function calculateTotal() {
             // Mengen auslesen
-            const bkQty = parseInt(document.getElementById('bkQty').value) || 0;
-            const bbQty = parseInt(document.getElementById('bbQty').value) || 0;
-            const ssQty = parseInt(document.getElementById('ssQty').value) || 0;
-            const skQty = parseInt(document.getElementById('skQty').value) || 0;
-            const ogQty = parseInt(document.getElementById('ogQty').value) || 0;
+            const quantities = {
+                bk: parseInt(document.getElementById('bkQty').value) || 0,
+                bb: parseInt(document.getElementById('bbQty').value) || 0,
+                ss: parseInt(document.getElementById('ssQty').value) || 0,
+                sk: parseInt(document.getElementById('skQty').value) || 0,
+                og: parseInt(document.getElementById('ogQty').value) || 0
+            };
             
             // Gesamtbetrag berechnen
-            const total = (bkQty * strainPrices.bk) + 
-                         (bbQty * strainPrices.bb) + 
-                         (ssQty * strainPrices.ss) + 
-                         (skQty * strainPrices.sk) +
-                         (ogQty * strainPrices.og);
+            let total = 0;
+            let totalItems = 0;
+            
+            for (const [key, qty] of Object.entries(quantities)) {
+                total += qty * strainPrices[key];
+                totalItems += qty;
+            }
             
             // Anzeige aktualisieren
             document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
-        }
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WHITE WIDOW | Doppel-Rechner</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2A0B4D;
-            --secondary: #A020F0;
-            --accent: #FFD700;
-            --vip: #00FFAA;
-            --black: #000000;
-            --white: #FFFFFF;
-        }
-        body {
-            font-family: 'Courier New', monospace;
-            background: var(--black);
-            color: var(--white);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            width: 100%;
-        }
-        .logo {
-            font-size: 2.5em;
-            color: var(--secondary);
-            text-shadow: 0 0 10px var(--primary);
-            margin: 0;
-        }
-        .calculator {
-            width: 100%;
-            max-width: 400px;
-            padding: 25px;
-            border: 2px solid var(--secondary);
-            border-radius: 10px;
-            background: rgba(42, 11, 77, 0.3);
-            margin-bottom: 30px;
-            box-sizing: border-box;
-        }
-        .calculator-title {
-            color: var(--accent);
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-        .toggle-container {
-            display: flex;
-            margin: 15px 0;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .toggle-btn {
-            flex: 1;
-            padding: 12px;
-            text-align: center;
-            background: var(--primary);
-            border: none;
-            color: var(--white);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .toggle-btn.active {
-            background: var(--secondary);
-            font-weight: bold;
-        }
-        .toggle-btn.vip-active {
-            background: var(--vip);
-        }
-        .input-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin: 15px 0;
-        }
-        input {
-            width: 100%;
-            padding: 15px;
-            background: var(--primary);
-            border: 1px solid var(--secondary);
-            color: var(--white);
-            border-radius: 5px;
-            font-size: 18px;
-            text-align: center;
-            box-sizing: border-box;
-        }
-        .strains-container {
-            margin-top: 20px;
-        }
-        .strain-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .strain-name {
-            flex: 2;
-            color: var(--accent);
-        }
-        .strain-price {
-            flex: 1;
-            text-align: right;
-            padding-right: 10px;
-        }
-        .strain-quantity {
-            flex: 1;
-        }
-        .strain-quantity input {
-            padding: 8px;
-            width: 50px;
-            text-align: center;
-            background: var(--primary);
-            border: 1px solid var(--secondary);
-            color: var(--white);
-            border-radius: 5px;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(160, 32, 240, 0.1);
-            border-radius: 5px;
-            text-align: center;
-        }
-        .profit {
-            font-size: 2em;
-            margin: 10px 0;
-        }
-        .total-amount {
-            font-size: 2em;
-            color: var(--accent);
-            margin: 10px 0;
-        }
-        .normal-profit { color: var(--accent); }
-        .vip-profit { color: var(--vip); }
-        .footer {
-            margin-top: auto;
-            text-align: center;
-            padding: 20px;
-            color: var(--secondary);
-            font-size: 0.8em;
-            width: 100%;
-        }
-        .divider {
-            width: 80%;
-            height: 2px;
-            background: var(--secondary);
-            margin: 20px 0;
-            opacity: 0.3;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div class="logo">WHITE WIDOW</div>
-        <p style="color: var(--accent);">Doppel-Rechner System</p>
-    </div>
-    
-    <!-- 1. Prozentrechner -->
-    <div class="calculator">
-        <div class="calculator-title">
-            <i class="fas fa-percentage"></i> Provision-Rechner
-        </div>
-        
-        <div class="toggle-container">
-            <button class="toggle-btn active" id="normalBtn" onclick="setMode('normal')">
-                <i class="fas fa-user"></i> Standard (15%)
-            </button>
-            <button class="toggle-btn" id="vipBtn" onclick="setMode('vip')">
-                <i class="fas fa-crown"></i> VIP (10%)
-            </button>
-        </div>
-        
-        <div class="input-container">
-            <input type="number" id="amount" placeholder="Kundenbetrag eingeben ($)" oninput="calculateSimple()" autofocus>
-        </div>
-        
-        <div class="result" id="simpleResult">
-            <div id="simpleProfitLabel">Ihr Anteil (15%):</div>
-            <div class="profit normal-profit" id="simpleProfitAmount">$0.00</div>
-            <div id="simpleDetails">Geben Sie einen Betrag ein</div>
-        </div>
-    </div>
-    
-    <div class="divider"></div>
-    
-    <!-- 2. Sorten-Additionsrechner -->
-    <div class="calculator">
-        <div class="calculator-title">
-            <i class="fas fa-cannabis"></i> Sorten-Rechner
-        </div>
-        
-        <div class="strains-container">
-            <div class="strain-row">
-                <div class="strain-name">Banana Kush</div>
-                <div class="strain-price">$120</div>
-                <div class="strain-quantity">
-                    <input type="number" id="bkQty" min="0" value="0" onchange="calculateTotal()">
-                </div>
-            </div>
-            <div class="strain-row">
-                <div class="strain-name">Blueberry Kush</div>
-                <div class="strain-price">$130</div>
-                <div class="strain-quantity">
-                    <input type="number" id="bbQty" min="0" value="0" onchange="calculateTotal()">
-                </div>
-            </div>
-            <div class="strain-row">
-                <div class="strain-name">Sour Strawberry</div>
-                <div class="strain-price">$200</div>
-                <div class="strain-quantity">
-                    <input type="number" id="ssQty" min="0" value="0" onchange="calculateTotal()">
-                </div>
-            </div>
-            <div class="strain-row">
-                <div class="strain-name">Space Kush</div>
-                <div class="strain-price">$150</div>
-                <div class="strain-quantity">
-                    <input type="number" id="skQty" min="0" value="0" onchange="calculateTotal()">
-                </div>
-            </div>
-            <div class="strain-row">
-                <div class="strain-name">OG Kush Joint</div>
-                <div class="strain-price">$160</div>
-                <div class="strain-quantity">
-                    <input type="number" id="ogQty" min="0" value="0" onchange="calculateTotal()">
-                </div>
-            </div>
-        </div>
-        
-        <div class="result">
-            <div>Gesamtbetrag:</div>
-            <div class="total-amount" id="totalAmount">$0.00</div>
-        </div>
-    </div>
-    
-    <div class="footer">
-        <p>© 2024 WHITE WIDOW | LOS SANTOS</p>
-        <p>Nur für GTA-RP Zwecke</p>
-    </div>
-
-    <script>
-        // 1. Prozentrechner Logik
-        let mode = 'normal';
-        
-        function setMode(newMode) {
-            mode = newMode;
-            document.getElementById('normalBtn').classList.remove('active');
-            document.getElementById('vipBtn').classList.remove('active', 'vip-active');
-            
-            const btn = newMode === 'normal' ? 'normalBtn' : 'vipBtn';
-            document.getElementById(btn).classList.add('active');
-            if(newMode === 'vip') document.getElementById(btn).classList.add('vip-active');
-            
-            calculateSimple();
-        }
-        
-        function calculateSimple() {
-            const amount = parseFloat(document.getElementById('amount').value) || 0;
-            const percentage = mode === 'normal' ? 0.15 : 0.10;
-            const profit = amount * percentage;
-            
-            document.getElementById('simpleProfitLabel').textContent = 
-                `Ihr Anteil (${mode === 'normal' ? '15%' : '10% VIP'}):`;
-                
-            document.getElementById('simpleProfitAmount').textContent = `$${profit.toFixed(2)}`;
-            document.getElementById('simpleProfitAmount').className = 
-                `profit ${mode === 'normal' ? 'normal-profit' : 'vip-profit'}`;
-            
-            document.getElementById('simpleDetails').innerHTML = 
-                `Kunde zahlt: $${amount.toFixed(2)}<br>
-                 ${amount > 0 ? `Lieferantenanteil: $${(amount - profit).toFixed(2)}` : ''}`;
-        }
-        
-        // 2. Sortenrechner Logik
-        const strainPrices = {
-            bk: 120,   // Banana Kush
-            bb: 130,   // Blueberry Kush
-            ss: 200,   // Sour Strawberry
-            sk: 150,   // Space Kush
-            og: 160    // OG Kush Joint
-        };
-        
-        function calculateTotal() {
-            // Mengen auslesen
-            const bkQty = parseInt(document.getElementById('bkQty').value) || 0;
-            const bbQty = parseInt(document.getElementById('bbQty').value) || 0;
-            const ssQty = parseInt(document.getElementById('ssQty').value) || 0;
-            const skQty = parseInt(document.getElementById('skQty').value) || 0;
-            const ogQty = parseInt(document.getElementById('ogQty').value) || 0;
-            
-            // Gesamtbetrag berechnen
-            const total = (bkQty * strainPrices.bk) + 
-                         (bbQty * strainPrices.bb) + 
-                         (ssQty * strainPrices.ss) + 
-                         (skQty * strainPrices.sk) +
-                         (ogQty * strainPrices.og);
-            
-            // Anzeige aktualisieren
-            document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('totalItems').textContent = totalItems;
         }
     </script>
 </body>
