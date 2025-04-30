@@ -243,6 +243,28 @@
         .copy-box i {
             margin-right: 5px;
         }
+
+        /* Link-Button Stil */
+        .link-button {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: rgba(160, 32, 240, 0.3);
+            border: 1px solid var(--secondary);
+            border-radius: 5px;
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .link-button:hover {
+            background: rgba(160, 32, 240, 0.5);
+            transform: scale(1.05);
+        }
+
+        .link-button i {
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -349,6 +371,9 @@
     </div>
     
     <div class="footer">
+        <button class="link-button" onclick="redirectToWhiteWidow()">
+            <i class="fas fa-link"></i> WhiteWidow Home
+        </button>
         <p>© 2024 WHITE WIDOW | LOS SANTOS</p>
         <p><i class="fas fa-triangle-exclamation"></i> Nur für GTA-RP Zwecke</p>
     </div>
@@ -448,6 +473,11 @@
                 .catch(err => {
                     console.error('Fehler beim Kopieren: ', err);
                 });
+        }
+
+        // Weiterleitung zur WhiteWidow-Homepage
+        function redirectToWhiteWidow() {
+            window.location.href = "https://xazzurocrow.github.io/Whitewidow/";
         }
         
         // Weed Leaf Animation
