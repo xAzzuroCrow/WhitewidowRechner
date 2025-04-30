@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WHITE WIDOW | Ultimate Deal Tools</title>
+    <title>WHITE WIDOW | Dealer Toolkit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -25,9 +25,10 @@
             flex-direction: column;
             align-items: center;
             background: 
-                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><path fill="%23A020F0" d="M50,0 C60,20 80,25 80,50 C80,75 60,80 50,100 C40,80 20,75 20,50 C20,25 40,20 50,0 Z"/></svg>'),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path fill="%23A020F0" d="M50,0 C60,20 80,25 80,50 C80,75 60,80 50,100 C40,80 20,75 20,50 C20,25 40,20 50,0 Z"/></svg>'),
                 linear-gradient(to bottom, var(--black), var(--primary));
-            background-size: 200px, cover;
+            background-size: 150px, cover;
+            background-attachment: fixed;
         }
         
         .header {
@@ -43,16 +44,22 @@
             margin: 0;
         }
         
+        .subtitle {
+            color: var(--accent);
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
         .calculator {
             width: 100%;
             max-width: 400px;
             padding: 25px;
             border: 2px solid var(--secondary);
             border-radius: 10px;
-            background: rgba(42, 11, 77, 0.6);
+            background: rgba(42, 11, 77, 0.7);
             margin-bottom: 30px;
             box-sizing: border-box;
-            box-shadow: 0 0 20px rgba(160, 32, 240, 0.3);
+            box-shadow: 0 0 15px rgba(160, 32, 240, 0.2);
         }
         
         .calculator-title {
@@ -152,7 +159,7 @@
         .result {
             margin-top: 20px;
             padding: 20px;
-            background: rgba(160, 32, 240, 0.1);
+            background: rgba(160, 32, 240, 0.15);
             border-radius: 5px;
             text-align: center;
         }
@@ -194,37 +201,53 @@
             font-weight: bold;
         }
         
-        /* Weed Leaf Animation */
-        .weed-leaf {
+        /* Animierte Weed Leaves */
+        .weed-animation {
             position: fixed;
-            opacity: 0..1;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
             z-index: -1;
+            overflow: hidden;
+        }
+        
+        .weed-leaf {
+            position: absolute;
+            opacity: 0.1;
             animation: float 15s infinite linear;
         }
         
         @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-100vh) rotate(360deg); }
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        /* Copy-Box Stil */
+        .copy-box {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(160, 32, 240, 0.2);
+            border: 1px dashed var(--secondary);
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-box:hover {
+            background: rgba(160, 32, 240, 0.3);
+        }
+
+        .copy-box i {
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
-    <!-- Dynamische Weed Leaves -->
-    <div class="weed-leaf" style="left:10%;top:10%;animation-delay:0s;animation-duration:20s;">
-        <svg width="50" height="50" viewBox="0 0 100 100">
-            <path fill="rgba(160,32,240,0.2)" d="M50,0 C60,20 80,25 80,50 C80,75 60,80 50,100 C40,80 20,75 20,50 C20,25 40,20 50,0 Z"/>
-        </svg>
-    </div>
-    <div class="weed-leaf" style="left:30%;top:20%;animation-delay:2s;animation-duration:25s;">
-        <svg width="70" height="70" viewBox="0 0 100 100">
-            <path fill="rgba(160,32,240,0.15)" d="M50,0 C60,20 80,25 80,50 C80,75 60,80 50,100 C40,80 20,75 20,50 C20,25 40,20 50,0 Z"/>
-        </svg>
-    </div>
-    <div class="weed-leaf" style="left:70%;top:15%;animation-delay:5s;animation-duration:18s;">
-        <svg width="40" height="40" viewBox="0 0 100 100">
-            <path fill="rgba(160,32,240,0.1)" d="M50,0 C60,20 80,25 80,50 C80,75 60,80 50,100 C40,80 20,75 20,50 C20,25 40,20 50,0 Z"/>
-        </svg>
-    </div>
+    <!-- Animierte Weed Leaves -->
+    <div class="weed-animation" id="weedAnimation"></div>
     
     <div class="header">
         <div class="logo">WHITE WIDOW</div>
@@ -257,6 +280,11 @@
                 <div>Kunde zahlt: <span class="highlight">$<span id="customerAmount">0.00</span></span></div>
                 <div>Lieferantenanteil: <span class="highlight">$<span id="supplierCut">0.00</span></span></div>
             </div>
+        </div>
+
+        <!-- Copy-to-Clipboard-Box -->
+        <div class="copy-box" onclick="copyToClipboard()">
+            <i class="fas fa-copy"></i> Anteil kopieren
         </div>
     </div>
     
@@ -312,6 +340,11 @@
             <div id="strainsDetails">
                 <div>Menge: <span class="highlight"><span id="totalItems">0</span> Einheiten</span></div>
             </div>
+        </div>
+
+        <!-- Copy-to-Clipboard-Box für Sorten-Rechner -->
+        <div class="copy-box" onclick="copyTotalToClipboard()">
+            <i class="fas fa-copy"></i> Gesamtbetrag kopieren
         </div>
     </div>
     
@@ -384,6 +417,73 @@
             document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
             document.getElementById('totalItems').textContent = totalItems;
         }
+        
+        // Copy-to-Clipboard für Provision-Rechner
+        function copyToClipboard() {
+            const profitText = document.getElementById('simpleProfitAmount').textContent;
+            navigator.clipboard.writeText(profitText)
+                .then(() => {
+                    const copyBox = document.querySelector('.calculator:first-child .copy-box');
+                    copyBox.innerHTML = '<i class="fas fa-check"></i> Kopiert!';
+                    setTimeout(() => {
+                        copyBox.innerHTML = '<i class="fas fa-copy"></i> Anteil kopieren';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Fehler beim Kopieren: ', err);
+                });
+        }
+
+        // Copy-to-Clipboard für Sorten-Rechner
+        function copyTotalToClipboard() {
+            const totalText = document.getElementById('totalAmount').textContent;
+            navigator.clipboard.writeText(totalText)
+                .then(() => {
+                    const copyBox = document.querySelector('.calculator:last-child .copy-box');
+                    copyBox.innerHTML = '<i class="fas fa-check"></i> Kopiert!';
+                    setTimeout(() => {
+                        copyBox.innerHTML = '<i class="fas fa-copy"></i> Gesamtbetrag kopieren';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Fehler beim Kopieren: ', err);
+                });
+        }
+        
+        // Weed Leaf Animation
+        function createWeedLeaves() {
+            const container = document.getElementById('weedAnimation');
+            const leafSizes = [40, 50, 60, 70];
+            const leafCount = 8;
+            
+            for (let i = 0; i < leafCount; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'weed-leaf';
+                
+                const size = leafSizes[Math.floor(Math.random() * leafSizes.length)];
+                const left = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = 10 + Math.random() * 20;
+                
+                leaf.innerHTML = `
+                    <svg width="${size}" height="${size}" viewBox="0 0 100 100">
+                        <path fill="rgba(160,32,240,0.${Math.floor(Math.random() * 3) + 1})" 
+                              d="M50,0 C60,20 80,25 80,50 C80,75 60,80 50,100 C40,80 20,75 20,50 C20,25 40,20 50,0 Z"/>
+                    </svg>
+                `;
+                
+                leaf.style.left = `${left}%`;
+                leaf.style.animationDelay = `${delay}s`;
+                leaf.style.animationDuration = `${duration}s`;
+                
+                container.appendChild(leaf);
+            }
+        }
+        
+        // Initialisierung
+        window.onload = function() {
+            createWeedLeaves();
+        };
     </script>
 </body>
 </html>
